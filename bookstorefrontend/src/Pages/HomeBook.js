@@ -4,11 +4,12 @@ import axios from "axios";
 
 const HomeBook = () => {
   const [books, setBooks] = useState([]);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedBook, setSelectedBook] = useState(null);
-  // const [selectedBookId, setSelectedBookId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
-  useEffect(() => {
+
+  //FETCHES ALL BOOKS WHEN APPLICATION RUNS FOR THE FIRST TIME
+   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -25,7 +26,62 @@ const HomeBook = () => {
 
 
 
+//EDIT MODEL OPNS WHEN CLICKED ON EDIT ICON
+const openModal = (book)=>{
+  setSelectedBook(book)
+  console.log(selectedBook)
+  setIsModalOpen(true)
+}
+
+
+
+//EDIT MODEL CLOSES WHEN CLICKED ON CANCEL
+const closeModal= ()=>{
+  setIsModalOpen(false)
+}
+
+
+
+
+//UPDATES THE OLD NOTE 
+const savechanges = async(editedbook)=>{
+const bookid = editedbook._id
+
+  try{
+    const res = await axios.put(`http://localhost:5555/api/edit/book/${bookid}`,editedbook)
+    console.log(res)
+
+    //FETCHES ONCE AGAIN ALL NOTES SO THAT UPDATED NOTE SHOULD BE VISIBLE ON THE UI AS SOON AS IT IS EDITED
+    const response = await axios.get("http://localhost:5555/api/get/allbooks");
+    setBooks(response.data);
+  }
+  catch(error)
+  {
+    console.log(error)
+  }
+}
  
+
+//DELETE BOOK
+const deletebook = async (id) => {
+  try {
+    console.log(id);
+    const res = await axios.delete(`http://localhost:5555/api/delete/book/${id}`);
+    console.log(res);
+    if (res.status === 200) {
+      // Book deleted successfully
+      const response = await axios.get("http://localhost:5555/api/get/allbooks");
+      setBooks(response.data);
+    } else {
+      // Handle other status codes if needed
+      console.log("Book deletion failed:", res.data.message);
+    }
+  } catch (error) {
+    console.log("Error deleting book:", error);
+  }
+
+}
+
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -59,16 +115,116 @@ const HomeBook = () => {
                       {book.author}
                     </a>
                   </p>
-                  <i className="fa-regular fa-pen-to-square" ></i>
-                  <i className="fa-solid fa-trash"></i>
                 </div>
               </div>
+              
+          
+          <i className="fa-regular fa-pen-to-square" onClick={()=>{openModal(book);  }} ></i>
+                  <i className="fa-solid fa-trash" onClick={()=>{deletebook(book._id); }}></i>
             </article>
+            
           ))}
+          {isModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">Edit Book</h2>
+            <div className="mb-4">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={selectedBook.title}
+                onChange={(e) =>
+                  setSelectedBook({ ...selectedBook, title: e.target.value })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Summary
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={selectedBook.summary}
+                onChange={(e) =>
+                  setSelectedBook({ ...selectedBook, summary: e.target.value })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="author"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Author
+              </label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                value={selectedBook.author}
+                onChange={(e) =>
+                  setSelectedBook({ ...selectedBook, author: e.target.value })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="publishYear"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Publish Year
+              </label>
+              <input
+                type="number"
+                id="publishYear"
+                name="publishYear"
+                value={selectedBook.publishYear}
+                onChange={(e) =>
+                  setSelectedBook({
+                    ...selectedBook,
+                    publishYear: parseInt(e.target.value),
+                  })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                closeModal();
+                savechanges(selectedBook);
+              }}
+            >
+              Save
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 ml-2 px-4 py-2 rounded-lg"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
         </div>
       </div>
   
     </div>
+    
+
   );
 }
 

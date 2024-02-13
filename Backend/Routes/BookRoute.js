@@ -103,29 +103,21 @@ const router = express.Router();
   
   
   
-      //API TO DELETE BOOK
-      router.delete('/delete/book/:id', async (req, res)=>{
-  
-  
-          try {
-              const {id} = req.params;
-              const book = await Book.findByIdAndDelete(id);
-              if(!book)
-              {
-                  return res.status(401).send({message:"Book Not Found!!"})
-              } 
-              else{
-              return res.status(401).send("Book Deleted Succesfully!!")
-  
-              }
-          } catch (error) {
-  
-              return res.status(401).send({message:error.message})
-              
-          }
-  
-  
-      })
+// API TO DELETE BOOK
+router.delete('/delete/book/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findByIdAndDelete(id);
+    if (!book) {
+      return res.status(404).send({ message: "Book Not Found!!" });
+    } else {
+      return res.status(200).send({ message: "Book Deleted Successfully!!" });
+    }
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+});
+
   
 
       export default router;
