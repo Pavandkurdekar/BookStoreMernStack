@@ -11,6 +11,7 @@ const router = express.Router();
     try {
       if (
         !request.body.title ||
+        !request.body.summary ||
         !request.body.author ||
         !request.body.publishYear
       ) {
@@ -18,6 +19,7 @@ const router = express.Router();
       } else {
         const newBook = {
           title: request.body.title,
+          summary:request.body.summary,
           author: request.body.author,
           publishYear: request.body.publishYear,
         };
@@ -79,7 +81,7 @@ const router = express.Router();
           }
   
   
-          else if(!request.body.title || !request.body.author || !request.body.publishYear )
+          else if(!request.body.title || !request.body.author || !request.body.publishYear  || !request.body.summary )
           {
             return response.status(400).send("All Fields Are Mandatory!!");
           }

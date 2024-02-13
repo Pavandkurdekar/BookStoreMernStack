@@ -1,0 +1,79 @@
+{isModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">Edit Book</h2>
+            <div className="mb-4">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={selectedBook.title}
+                onChange={(e) =>
+                  setSelectedBook({ ...selectedBook, title: e.target.value })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="author"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Author
+              </label>
+              <input
+                type="text"
+                id="author"
+                name="author"
+                value={selectedBook.author}
+                onChange={(e) =>
+                  setSelectedBook({ ...selectedBook, author: e.target.value })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="publishYear"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Publish Year
+              </label>
+              <input
+                type="number"
+                id="publishYear"
+                name="publishYear"
+                value={selectedBook.publishYear}
+                onChange={(e) =>
+                  setSelectedBook({
+                    ...selectedBook,
+                    publishYear: parseInt(e.target.value),
+                  })
+                }
+                className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              />
+            </div>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                closeModal();
+                savechanges(selectedBookId);
+              }}
+            >
+              Save
+            </button>
+            <button
+              className="bg-gray-300 text-gray-700 ml-2 px-4 py-2 rounded-lg"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
